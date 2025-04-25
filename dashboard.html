@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | FileVault</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="logo">
+                <i class="fas fa-folder-open me-2"></i>FileVault
+            </a>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li class="active">
+                    <a href="dashboard.html">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="files.html">
+                        <i class="fas fa-file"></i> My Files
+                    </a>
+                </li>
+                <li>
+                    <a href="upload.html">
+                        <i class="fas fa-upload"></i> Upload
+                    </a>
+                </li>
+                <li>
+                    <a href="#shared">
+                        <i class="fas fa-share-alt"></i> Shared Files
+                    </a>
+                </li>
+                <li>
+                    <a href="#trash">
+                        <i class="fas fa-trash"></i> Trash
+                    </a>
+                </li>
+                <li>
+                    <a href="#settings">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <img src="assets/images/user-avatar.jpg" alt="User" class="avatar">
+                <div class="user-info">
+                    <h6 id="username">John Doe</h6>
+                    <small id="user-email">john@example.com</small>
+                </div>
+                <a href="#" id="logout"><i class="fas fa-sign-out-alt"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search files...">
+            </div>
+            <div class="nav-right">
+                <div class="theme-toggle" data-bs-toggle="tooltip" title="Toggle Theme">
+                    <i class="fas fa-moon"></i>
+                </div>
+                <div class="notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Dashboard Content -->
+        <div class="content">
+            <div class="page-header">
+                <h2>Dashboard</h2>
+                <div class="d-flex justify-content-between align-items-center">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                        </ol>
+                    </nav>
+                    <button id="refreshBtn" class="btn btn-outline-primary btn-sm" data-bs-toggle="tooltip" title="Refresh">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="row stats-cards" id="statsContent">
+                <div class="col-md-3">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="stat-icon bg-primary">
+                                <i class="fas fa-file"></i>
+                            </div>
+                            <h5>Total Files</h5>
+                            <h3 id="totalFiles">0</h3>
+                            <p><span class="text-success" id="totalFilesChange">+0%</span> from last month</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="stat-icon bg-success">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <h5>PDFs</h5>
+                            <h3 id="pdfFiles">0</h3>
+                            <p><span class="text-success" id="pdfFilesChange">+0%</span> from last month</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="stat-icon bg-warning">
+                                <i class="fas fa-file-video"></i>
+                            </div>
+                            <h5>Videos</h5>
+                            <h3 id="videoFiles">0</h3>
+                            <p><span class="text-danger" id="videoFilesChange">-0%</span> from last month</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card stat-card">
+                        <div class="card-body">
+                            <div class="stat-icon bg-info">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <h5>Documents</h5>
+                            <h3 id="docFiles">0</h3>
+                            <p><span class="text-success" id="docFilesChange">+0%</span> from last month</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-none" id="statsLoader">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Storage Usage -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5>Storage Usage</h5>
+                    <div class="progress">
+                        <div class="progress-bar" id="storageProgress" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <small id="storageUsage">0 Bytes of 0 Bytes used</small>
+                </div>
+            </div>
+
+            <!-- Quick Upload Section -->
+            <div class="card upload-section">
+                <div class="card-header">
+                    <h4>Quick Upload</h4>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <p class="mb-0">Upload files quickly from your dashboard</p>
+                        <a href="upload.html" class="btn btn-primary">Go to Upload Page</a>
+                    </div>
+                    <div class="upload-area" id="dropArea">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p class="drop-message">Drag & drop files here or click to browse</p>
+                        <input type="file" id="fileInput" multiple style="display: none;">
+                        <button class="btn btn-primary mt-3" id="browseBtn">Browse Files</button>
+                    </div>
+                    <div class="upload-progress d-none" id="uploadProgress">
+                        <div class="progress">
+                            <div class="progress-bar" id="progressBar" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <p class="mt-2" id="progressText">Uploading: 0%</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Files -->
+            <div class="card recent-files" id="filesContent">
+                <div class="card-header">
+                    <h4>Recent Files</h4>
+                    <div class="file-actions">
+                        <a href="files.html" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table file-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Size</th>
+                                    <th>Modified</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fileList">
+                                <!-- Files will be loaded here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="d-none" id="filesLoader">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Preview Modal -->
+    <div class="modal fade" id="filePreviewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="previewFileName">File Preview</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="previewContent">
+                    <!-- Preview content will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="downloadPreviewBtn">Download</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share File Modal -->
+    <div class="modal fade" id="shareFileModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Share File</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="shareLink" readonly>
+                        <button class="btn btn-outline-secondary" id="copyLinkBtn" disabled>Copy</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="generateLinkBtn">Generate Link</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this file? This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/dashboard.js"></script>
+</body>
+</html>
